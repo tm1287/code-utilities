@@ -139,7 +139,7 @@ function FormulaParser() {
         </Toast.Header>
         <Toast.Body>Either I fucked up or your formula is invalid. You take a guess which one it is.</Toast.Body>
     </Toast>
-    <Card style={{ width: '100%' }}>
+    <Card style={{ width: '100%', 'min-width': '30rem' }}>
         <Card.Body>
             <Card.Title>Excel to LaTeX</Card.Title>
             <Form>
