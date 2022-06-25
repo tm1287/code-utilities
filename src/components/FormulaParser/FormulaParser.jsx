@@ -24,14 +24,17 @@ function FormulaParser() {
                     //console.log(functionNode);
                     nodes.push("\\sqrt{%1}")
                     break;
+                case "pow":
+                    nodes.push("%1^{%2}")
+                    break;
                 default:
                     //if(functionNode.)
                     let p = "%1";
                     Array.from(Array(functionNode.arguments.length-1)).forEach((x, i) => {
                         p += `,%${i+2}`;
                     });
-                    console.log("\\text{" + functionNode.name+"(" + p + ")}");
-                    nodes.push("\\text{" + functionNode.name+"(" + p + ")}");
+                    console.log("\\text{" + functionNode.name.toUpperCase()+"(" + p + ")}");
+                    nodes.push("\\text{" + functionNode.name.toUpperCase()+"(" + p + ")}");
                     break;
             }
         },
@@ -67,7 +70,7 @@ function FormulaParser() {
         enterBinaryExpression(binExpNode) {
             console.log(`exp is ${binExpNode.operator}`)
             if(binExpNode.operator === "/") {
-                nodes.push("\\dfrac{%1}{%2}");
+                nodes.push("\\frac{%1}{%2}");
             } else {
                 nodes.push("(%1" + binExpNode.operator + "%2)");
             }
@@ -136,7 +139,7 @@ function FormulaParser() {
         </Toast.Header>
         <Toast.Body>Either I fucked up or your formula is invalid. You take a guess which one it is.</Toast.Body>
     </Toast>
-    <Card style={{ width: '36rem' }}>
+    <Card style={{ width: '100%' }}>
         <Card.Body>
             <Card.Title>Excel to LaTeX</Card.Title>
             <Form>
