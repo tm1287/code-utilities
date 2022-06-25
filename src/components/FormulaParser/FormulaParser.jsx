@@ -69,7 +69,7 @@ function FormulaParser() {
             if(binExpNode.operator === "/") {
                 nodes.push("\\dfrac{%1}{%2}");
             } else {
-                nodes.push("%1" + binExpNode.operator + "%2");
+                nodes.push("(%1" + binExpNode.operator + "%2)");
             }
         },
         exitBinaryExpression(binExpNode) {
@@ -118,8 +118,14 @@ function FormulaParser() {
         console.log(ast);
 
         visit(ast, visitor);
-        console.log("$" + nodes.toString() + "$");
-        setLatexString("$" + nodes.toString() + "$");
+        let ns = nodes.toString();
+        if(ns[0] === "(" && ns[ns.length-1] === ")") {
+            ns = ns.slice(1);
+            ns = ns.slice(0, ns.length - 1);
+        }
+        console.log("$" + ns + "$");
+        
+        setLatexString("$" + ns + "$");
 
     }
   return (
