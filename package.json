@@ -10,9 +10,11 @@
     "excel-formula-ast": "^1.1.1",
     "excel-formula-tokenizer": "^3.0.0",
     "fast-formula-parser": "^1.0.19",
+    "katex": "^0.16.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.2.0",
+    "react-latex-next": "^2.1.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
