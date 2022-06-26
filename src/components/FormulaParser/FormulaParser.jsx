@@ -2,14 +2,18 @@ import React, {useState, useRef} from 'react'
 import {Card, Button, Form, Toast, Stack} from "react-bootstrap";
 import 'katex/dist/katex.min.css'
 import Latex from 'react-latex-next'
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 const {tokenize} = require('excel-formula-tokenizer');
 const {buildTree, visit} = require('excel-formula-ast');
+const formulaUtil = require('excel-formula');
 
 
 function FormulaParser() {
   const [latexString, setLatexString] = useState("");
   const [errored, setErrored] = useState(false);
   const [formula, setFormula] = useState("");
+  const [formattedFormula, setFormattedFormula] = useState("");
 
   let nodes = [];
   const visitor = {
@@ -26,6 +30,9 @@ function FormulaParser() {
                     break;
                 case "pow":
                     nodes.push("%1^{%2}")
+                    break;
+                case "exp":
+                    nodes.push("e^{%1}")
                     break;
                 default:
                     //if(functionNode.)
@@ -119,8 +126,12 @@ function FormulaParser() {
         }
 
         console.log(ast);
-
-        visit(ast, visitor);
+        try {
+            visit(ast, visitor);
+        } catch (e) {
+            setErrored(true);
+            return;
+        }
         let ns = nodes.toString();
         if(ns[0] === "(" && ns[ns.length-1] === ")") {
             ns = ns.slice(1);
@@ -135,11 +146,11 @@ function FormulaParser() {
     <div>
     <Toast show={errored} onClose={() => setErrored(false)}>
         <Toast.Header>
-            <strong className="me-auto">Error</strong>
+            <strong className="me-auto">LaTeX Rendering Error</strong>
         </Toast.Header>
         <Toast.Body>Either I fucked up or your formula is invalid. You take a guess which one it is.</Toast.Body>
     </Toast>
-    <Card style={{ width: '100%', 'min-width': '30rem' }}>
+    <Card style={{ width: '100%', 'minWidth': '30rem', marginTop: "10px"}}>
         <Card.Body>
             <Card.Title>Excel to LaTeX</Card.Title>
             <Form>
@@ -150,10 +161,19 @@ function FormulaParser() {
             </Form>
             <Button variant="primary" onClick={(e) => {
                 console.log(formula);
+                if(formula[0] === "=") {
+                    setFormula(formula.slice(0));
+                }
+                setFormattedFormula(formulaUtil.formatFormula(formula));
                 parseFormula(formula);
                 }}>Render</Button>
         </Card.Body>
         <Latex>{latexString}</Latex>
+        {formattedFormula !== "" ? (
+            <SyntaxHighlighter language="excel" style={docco} customStyle={{textAlign: "left", borderRadius: "25px", marginTop: "1rem"}}>
+            {formattedFormula}
+        </SyntaxHighlighter>
+        ) : <></>}
         <br/>
     </Card>
     </div>
